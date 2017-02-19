@@ -103,7 +103,7 @@ def run_homography(im_src):
     board_array = get_board_array(im_out)
 
     test_red = cv2.cvtColor(im_out,cv2.COLOR_BGR2HSV)
-    test_red = cv2.inRange(im_out,lower_red,upper_red)
+    test_red = cv2.inRange(test_red,lower_red,upper_red)
     cv2.imshow("red-thresh",test_red)
     print("red thresh ",len(np.nonzero(test_red)[0]))
 
