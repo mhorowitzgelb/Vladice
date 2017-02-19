@@ -76,24 +76,19 @@ def run_homography(im_src):
     im_out = cv2.warpPerspective(im_src, h, (11*scale, 11*scale))
 
     # Display images
-    cv2.imshow("Warped Source Image", im_out)
+    #cv2.imshow("Warped Source Image", im_out)
 
-    gray_scale = cv2.cvtColor(im_out,cv2.COLOR_BGR2GRAY)
+    #gray_scale = cv2.cvtColor(im_out,cv2.COLOR_BGR2GRAY)
 
-    cv2.namedWindow("edge_detection")
-
-
-
-    cv2.createTrackbar("Threshold", 'edge_detection', 0,255, lambda x: x)
+    #cv2.namedWindow("edge_detection")
 
 
-    while(1):
-        thresh = cv2.getTrackbarPos("Threshold","edge_detection")
-        mask = ((gray_scale <=thresh) * 255).astype(np.uint8)
-        #print(mask)
-        cv2.imshow("edge_detection", mask )
-        if cv2.waitKey(10) == 27:
-            break
+
+    #cv2.createTrackbar("Threshold", 'edge_detection', 0,255, lambda x: x)
+
+
+
+
 
     for i in range(1, 11):
         cv2.line(im_out,(i * scale, 0), (i* scale, 11* scale -1),(0,255,0),scale / 5)
@@ -101,10 +96,10 @@ def run_homography(im_src):
 
     board_array = get_board_array(im_out)
 
-    test_red = cv2.cvtColor(im_out,cv2.COLOR_BGR2HSV)
-    test_red = cv2.inRange(test_red,lower_red,upper_red)
-    cv2.imshow("red-thresh",test_red)
-    print("red thresh ",len(np.nonzero(test_red)[0]))
+    #test_red = cv2.cvtColor(im_out,cv2.COLOR_BGR2HSV)
+    #test_red = cv2.inRange(test_red,lower_red,upper_red)
+    #cv2.imshow("red-thresh",test_red)
+    #print("red thresh ",len(np.nonzero(test_red)[0]))
 
     for i in range(11):
         for j in range(11):
@@ -123,6 +118,7 @@ def run_homography(im_src):
     cv2.waitKey(0)
 
     cv2.destroyAllWindows()
+    return board_array
 
 
 def click_corners(event, x, y, flags, param):
