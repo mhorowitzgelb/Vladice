@@ -13,7 +13,7 @@ def run_homography(im_src):
 
     (h,w,z) = im_src.shape
 
-    im_src = cv2.resize(im_src,(w/2,h/2))
+    #im_src = cv2.resize(im_src,(w/2,h/2))
 
 
     #cv2.setMouseCallback("srcImage", click_corners)
@@ -58,8 +58,8 @@ def run_homography(im_src):
 
 
 
-    for pt in pts_src:
-        cv2.circle(im_src,(pt[0],pt[1]),20,(0,0,255),thickness=4)
+    #for pt in pts_src:
+     #   cv2.circle(im_src,(pt[0],pt[1]),20,(0,0,255),thickness=4)
 
     cv2.imshow("srcImage", im_src)
 
@@ -100,7 +100,25 @@ def run_homography(im_src):
         cv2.line(im_out,(i * scale, 0), (i* scale, 11* scale -1),(0,255,0),scale / 5)
         cv2.line(im_out,(0, i * scale), (11* scale-1, i*scale),(0,255,0),scale / 5)
 
+    board_array = get_board_array(im_out)
+
+    test_red = cv2.cvtColor(im_out,cv2.COLOR_BGR2HSV)
+    test_red = cv2.inRange(test_red,lower_red,upper_red)
+    cv2.imshow("red-thresh",test_red)
+    print("red thresh ",len(np.nonzero(test_red)[0]))
+
+    for i in range(11):
+        for j in range(11):
+            if(board_array[i,j] == 2):
+                cv2.circle(im_out,(j* scale + scale/2, i*scale + scale/2),scale/2 - 5,(0,0,255),10)
+
+
+
+
     cv2.imshow("lines", im_out)
+
+
+
     cv2.waitKey(0)
 
     cv2.destroyAllWindows()
@@ -123,6 +141,31 @@ def click_corners(event, x, y, flags, param):
         pts_src.append([x, y])
         if (len(pts_src) == 4):
             points_selected = True
+
+
+lower_red = (0, 100, 30)
+upper_red = (10, 255, 255)
+
+def get_piece(square):
+    hsv_square = cv2.cvtColor(square,cv2.COLOR_BGR2HSV)
+    print(hsv_square.shape)
+    mask = cv2.inRange(hsv_square,lower_red,upper_red)
+    nonzero = np.nonzero(mask)
+    if (float(len(nonzero[0])) / (mask.shape[0] *mask.shape[1])) > 0.5:
+        return 2
+    else:
+        return 0
+
+
+
+def get_board_array(squared_img):
+    board = np.zeros((11,11),dtype=np.int)
+    for i  in range(11):
+        for j in range(11):
+            square = squared_img[i*scale:(i+1)*scale,j*scale:((j+1)*scale),:]
+            board[i,j] = get_piece(square)
+    return board
+
 
 
 if __name__ == '__main__':
