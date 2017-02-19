@@ -1,5 +1,6 @@
 import cv2 as cv
 import numpy as np
+import cPickle
 
 
 
@@ -11,8 +12,11 @@ def get_square_points(image):
 
     #cv.setMouseCallback("original",click_color)
 
-    greenLower = (29, 150, 50)
-    greenUpper = (70, 255, 255)
+    f = open('bound_working.pkl','rb')
+    bound = cPickle.load(f)
+    green_bound = bound['green']
+    greenLower = green_bound[0]
+    greenUpper = green_bound[1]
 
     mask = cv.inRange(hsv_image, greenLower, greenUpper)
     mask = cv.erode(mask, None, iterations=2)

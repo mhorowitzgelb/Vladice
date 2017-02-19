@@ -3,8 +3,7 @@
 import cv2
 import numpy as np
 from circle_detection import get_square_points
-
-
+import cPickle
 
 
 scale  = 50
@@ -111,6 +110,8 @@ def run_homography(im_src):
         for j in range(11):
             if(board_array[i,j] == 2):
                 cv2.circle(im_out,(j* scale + scale/2, i*scale + scale/2),scale/2 - 5,(0,0,255),10)
+            elif(board_array[i,j] == 1):
+                cv2.circle(im_out, (j * scale + scale / 2, i * scale + scale / 2), scale / 2 - 5, (255, 0, 0), 10)
 
 
 
@@ -143,16 +144,39 @@ def click_corners(event, x, y, flags, param):
             points_selected = True
 
 
-lower_red = (0, 100, 30)
-upper_red = (10, 255, 255)
+f = open('bound_working.pkl','rb')
+bound = cPickle.load(f)
+
+red_bound = bound['red']
+blue_bound = bound['blue']
+
+lower_red = red_bound[0]
+upper_red = red_bound[1]
+
+lower_blue = blue_bound[0]
+upper_blue = blue_bound[1]
 
 def get_piece(square):
     hsv_square = cv2.cvtColor(square,cv2.COLOR_BGR2HSV)
-    print(hsv_square.shape)
-    mask = cv2.inRange(hsv_square,lower_red,upper_red)
-    nonzero = np.nonzero(mask)
-    if (float(len(nonzero[0])) / (mask.shape[0] *mask.shape[1])) > 0.5:
+    hl = lower_red[0]
+    sl = lower_red[1]
+    vl = lower_red[2]
+    hh = upper_red[0]
+    sh = upper_red[1]
+    vh = upper_red[2]
+    if hl < 0:
+        red_mask = cv2.bitwise_or(cv2.inRange(hsv_square, (255 + hl, sl, vl), (255, sh, vh)),
+                             cv2.inRange(hsv_square, (0, sl, vl), (hh, sl, vl)))
+    else:
+        red_mask = cv2.inRange(hsv_square,lower_red,upper_red)
+
+    blue_mask = cv2.inRange(hsv_square,lower_blue,upper_blue)
+    nonzero_blue = np.nonzero(blue_mask)
+    nonzero_red = np.nonzero(red_mask)
+    if (float(len(nonzero_red[0])) / (red_mask.shape[0] *red_mask.shape[1])) >= 0.4:
         return 2
+    elif (float(len(nonzero_blue[0]))/(blue_mask.shape[0]* blue_mask.shape[1])) >= 0.4:
+        return 1
     else:
         return 0
 
