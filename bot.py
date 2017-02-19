@@ -53,7 +53,7 @@ def show_image(im):
 
 if __name__ == '__main__':
 	pi = RaspberryPI()
-	# im = pi.take_picture()
-	# show_image(im)
-	pi.voice('what is my purpose')
+	im = pi.take_picture()
+	show_image(im)
+	# pi.voice('what is my purpose')
 
