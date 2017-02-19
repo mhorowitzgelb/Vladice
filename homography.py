@@ -117,7 +117,7 @@ def run_homography(im_src):
 
     ##cv2.waitKey(0)
 
-    cv2.destroyAllWindows()
+    ##cv2.destroyAllWindows()
     return board_array
 
 
