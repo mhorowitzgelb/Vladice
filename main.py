@@ -7,17 +7,19 @@ from bot import RaspberryPI
 from ai import ai_move
 import RPi.GPIO as GPIO
 import time
+from homography import run_homography
 
 def run():
 		pi = RaspberryPI()
 		# Find corners of the game board and compute homography
 		while True:
-			pi.voice('i yearn for death')
+			# pi.voice('i yearn for death')
 			# Wait for button press
-			wait_for_button()
+			# wait_for_button()
 
 			# Wait  200ms, then take picture of board
 			im = pi.take_picture()
+			run_homography(im)
 
 			# Parse image to create board
 			board = parse_board(im)
