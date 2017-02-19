@@ -9,7 +9,14 @@ from circle_detection import get_square_points
 
 scale  = 50
 def run_homography(im_src):
+    im_src = cv2.resize()
     cv2.namedWindow("srcImage")
+
+    (h,w) = im_src.shape
+
+    im_src = cv2.resize(im_src,(h/2,w/2))
+
+
     #cv2.setMouseCallback("srcImage", click_corners)
 
 
