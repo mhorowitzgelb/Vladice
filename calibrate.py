@@ -12,8 +12,8 @@ cv.createTrackbar('track_green_sl','calibrate green',0,255,lambda x:x)
 cv.createTrackbar('track_green_sh','calibrate green',0,255,lambda x:x)
 cv.createTrackbar('track_green_vl','calibrate green',0,255,lambda x:x)
 cv.createTrackbar('track_green_vh','calibrate green',0,255,lambda x:x)
-'''
-cv.namedWindow("calibrate red")
+
+cv.namedWindow("calibrate red",cv.WINDOW_NORMAL)
 cv.resizeWindow("calibrate red", 960, 540)
 cv.createTrackbar('track_red_hl','calibrate red',0,255,lambda y:y)
 cv.createTrackbar('track_red_hh','calibrate red',0,255,lambda y:y)
@@ -22,13 +22,13 @@ cv.createTrackbar('track_red_sh','calibrate red',0,255,lambda y:y)
 cv.createTrackbar('track_red_vl','calibrate red',0,255,lambda y:y)
 cv.createTrackbar('track_red_vh','calibrate red',0,255,lambda y:y)
 
-cv.namedWindow("calibrate blue")
+cv.namedWindow("calibrate blue",cv.WINDOW_NORMAL)
 cv.resizeWindow('calibrate blue', 960, 540)
 cv.createTrackbar('track_blue','calibrate blue',0,255,lambda z:z)
 cv.createTrackbar('track_blue','calibrate blue',0,255,lambda z:z)
 cv.createTrackbar('track_blue','calibrate blue',0,255,lambda z:z)
 cv.createTrackbar('track_blue','calibrate blue',0,255,lambda z:z)
-'''
+
 pi = RaspberryPI()
 img = pi.take_picture()
 hsv_img = cv.cvtColor(img, cv.COLOR_BGR2HSV)
