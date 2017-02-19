@@ -10,7 +10,7 @@ cv.createTrackbar('track_green_sl','calibrate green',0,255,lambda x:x)
 cv.createTrackbar('track_green_sh','calibrate green',0,255,lambda x:x)
 cv.createTrackbar('track_green_vl','calibrate green',0,255,lambda x:x)
 cv.createTrackbar('track_green_vh','calibrate green',0,255,lambda x:x)
-
+'''
 cv.namedWindow("calibrate red")
 cv.resizeWindow("calibrate red", 960, 540)
 cv.createTrackbar('track_red_hl','calibrate red',0,255,lambda y:y)
@@ -26,7 +26,7 @@ cv.createTrackbar('track_blue','calibrate blue',0,255,lambda z:z)
 cv.createTrackbar('track_blue','calibrate blue',0,255,lambda z:z)
 cv.createTrackbar('track_blue','calibrate blue',0,255,lambda z:z)
 cv.createTrackbar('track_blue','calibrate blue',0,255,lambda z:z)
-
+'''
 pi = RaspberryPI()
 
 while True:
@@ -42,8 +42,8 @@ while True:
     high = (hh,sh,vh)
     mask = cv.inRange(hsv_img,low,high)
     cv.imshow('original',img)
-    cv.imshow('calibrate green', img)
-    if(cv.waitKey(10)):
+    cv.imshow('calibrate green', mask)
+    if(cv.waitKey(10)== 27):
         break
 
 cv.destroyAllWindows()
