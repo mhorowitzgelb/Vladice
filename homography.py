@@ -11,7 +11,7 @@ scale  = 50
 def run_homography(im_src):
     cv2.namedWindow("srcImage")
 
-    (h,w) = im_src.shape
+    (h,w,z) = im_src.shape
 
     im_src = cv2.resize(im_src,(h/2,w/2))
 
