@@ -10,7 +10,6 @@ from homography import run_homography
 
 def run():
 		pi = RaspberryPI()
-		pi.voice('i yearn for death')
 
 		# Find corners of the game board and compute homography
 		while True:
