@@ -32,7 +32,7 @@ def run_homography(im_src):
             else:
                 left_aboves[j][1] += 1
 
-    pts_src = np.zeros((4,2))
+    pts_src = np.zeros((4,2),dtype=np.int)
 
 
     for i in range(4):
@@ -52,8 +52,11 @@ def run_homography(im_src):
 
 
 
+    for pt in pts_src:
+        cv2.circle(im_src,(pt[0],pt[1]),20,(0,0,255),thickness=4)
 
     cv2.imshow("srcImage", im_src)
+
 
 
 
@@ -117,4 +120,5 @@ def click_corners(event, x, y, flags, param):
 
 
 if __name__ == '__main__':
-    main()
+    img = cv2.imread("board_small.jpg")
+    run_homography(img)
