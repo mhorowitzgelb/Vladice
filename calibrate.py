@@ -50,7 +50,7 @@ while True:
     if(cv.waitKey(100)== 10):
         break
 
-cv.destroyAllWindows()
+cv.destroyWindow("calibrate red")
 
 bound_dict = {'green' : (low_green,high_green)}
 
@@ -66,9 +66,11 @@ while True:
     low_red = (hl,sl,vl)
     high_red = (hh,sh,vh)
     mask = cv.inRange(hsv_img,low_red,high_red)
-    cv.imshow('calibrate red', mask)
+    cv.imshow('calibrate red"', mask)
     if(cv.waitKey(100)== 10):
         break
+
+cv.destroyWindow('calibrate red')
 
 bound_dict['red'] = (low_red,high_red)
 
@@ -90,6 +92,8 @@ while True:
     cv.imshow('calibrate blue', mask)
     if(cv.waitKey(100)== 10):
         break
+
+cv.destroyWindow('calibrate blue')
 
 bound_dict['blue'] = (low_blue,high_blue)
 
