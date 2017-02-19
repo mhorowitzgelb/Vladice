@@ -13,7 +13,7 @@ def run_homography(im_src):
 
     (h,w,z) = im_src.shape
 
-    im_src = cv2.resize(im_src,(w/2,h/2))
+    #im_src = cv2.resize(im_src,(w/2,h/2))
 
 
     #cv2.setMouseCallback("srcImage", click_corners)
