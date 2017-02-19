@@ -43,14 +43,16 @@ class RaspberryPI:
 
 
 def show_image(im):
-	cv2.namedWindow('im', cv2.WINDOW_NORMAL)
 	cv2.imshow('im', im)
-	cv2.waitKey(0)
-	cv2.destroyAllWindows()
+	cv2.waitKey(10)
 
 if __name__ == '__main__':
 	pi = RaspberryPI()
-	im = pi.take_picture()
-	show_image(im)
+	cv2.namedWindow('im', cv2.WINDOW_NORMAL)
+	cv2.resizeWindow('im', 960, 540)
+	while True:
+		im = pi.take_picture()
+		show_image(im)
+	cv2.destroyAllWindows()
 	# pi.voice('what is my purpose')
 

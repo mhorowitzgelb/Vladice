@@ -2,28 +2,72 @@
 
 import cv2
 import numpy as np
+from circle_detection import get_square_points
 
 
-pts_src = []
-points_selected = False
+
 
 scale  = 50
-def main():
+def run_homography(im_src):
     cv2.namedWindow("srcImage")
-    cv2.setMouseCallback("srcImage", click_corners)
+
+    (h,w,z) = im_src.shape
+
+    im_src = cv2.resize(im_src,(w/2,h/2))
+
+
+    #cv2.setMouseCallback("srcImage", click_corners)
 
 
     # Read source image.
-    im_src = cv2.imread('board_small.jpg')
+
+    points_unsorted = get_square_points(im_src)
+
+    left_aboves = np.zeros((4,2))
+
+    for i in range(4):
+        for j in range(i+1,4):
+            point_i = points_unsorted[i][0]
+            point_j = points_unsorted[j][0]
+            if point_i[0] < point_j[0]:
+                left_aboves[i][0] += 1
+            else:
+                left_aboves[j][0] += 1
+            if point_i[1] < point_j[1]:
+                left_aboves[i][1] += 1
+            else:
+                left_aboves[j][1] += 1
+
+    pts_src = np.zeros((4,2),dtype=np.int)
+
+
+    for i in range(4):
+        left_above = left_aboves[i]
+        if left_above[0] >=2 and left_above[1] >= 2:
+            pts_src[0,0] = points_unsorted[i][0][0]
+            pts_src[0,1] = points_unsorted[i][0][1]
+        elif left_above[0] < 2 and left_above[1] >= 2:
+            pts_src[1, 0] = points_unsorted[i][0][0]
+            pts_src[1, 1] = points_unsorted[i][0][1]
+        elif left_above[0] <2 and left_above[1] < 2:
+            pts_src[2, 0] = points_unsorted[i][0][0]
+            pts_src[2, 1] = points_unsorted[i][0][1]
+        elif left_above[0] >= 2 and left_above[1] < 2:
+            pts_src[3, 0] = points_unsorted[i][0][0]
+            pts_src[3, 1] = points_unsorted[i][0][1]
+
+
+
+    for pt in pts_src:
+        cv2.circle(im_src,(pt[0],pt[1]),20,(0,0,255),thickness=4)
+
     cv2.imshow("srcImage", im_src)
 
 
 
+
     pts_dst = np.array([[0, 0], [11*scale -1, 0], [11*scale -1, 11* scale -1], [0, 11* scale -1]])
-    while True:
-        cv2.waitKey()
-        if points_selected:
-            break
+
 
 
     # Calculate Homography
@@ -82,4 +126,5 @@ def click_corners(event, x, y, flags, param):
 
 
 if __name__ == '__main__':
-    main()
+    img = cv2.imread("board_small.jpg")
+    run_homography(img)
