@@ -27,8 +27,8 @@ public:
 	void print_board();
 	int convert_coords(int x, int y);
 	int make_move(int node, int);
-	double computer_move(int color, int start, int end);
-	double montecarlo(int color, int start, int end);
+	double computer_move(int color, int start, int end, int* result);
+	double montecarlo(int color, int start, int end, int* result);
 	double computer_move_dijkstra(int color, int start, int end);
 	int size;
 	int empty;

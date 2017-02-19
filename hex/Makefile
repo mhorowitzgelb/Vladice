@@ -1,10 +1,12 @@
 CXXFLAGS=-O3
 hex: main.o graph.o
-	g++ main.o graph.o -o hex
+	g++ -shared -Wl,-soname,libhex.so main.o graph.o -o libhex.so
 
-main.o: main.cpp graph.h hex.h
+main.o:
+	g++ -c -fPIC main.cpp -o main.o
 
-graph.o: graph.cpp graph.h
+graph.o:
+	g++ -c -fPIC graph.cpp -o graph.o
 
 clean:
-	-rm hex *.o
+	-rm *.o libhex.so

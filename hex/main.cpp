@@ -20,6 +20,7 @@ using namespace std;
 int debug = 0;
 int num_iterations = 2000;
 
+
 void hexboard::generate_connected_graph()
 {
 	/* the sides of the board are nodes from size*size through size*size+3 (aka, the 4 nodes
@@ -34,7 +35,7 @@ void hexboard::generate_connected_graph()
 	 * a node will connect to nodes (N=node, RW=row width)
 	 *    N-RW
 	 *    N-RW+1
-	 *    N-1 
+	 *    N-1
 	 *    N+1
 	 *    N+RW-1
 	 *    N+RW
@@ -62,7 +63,7 @@ void hexboard::generate_connected_graph()
 			board->connect_nodes(i, i+n);
 		else
 			board->connect_nodes(i, SIDE_BOTTOM(n));
-		
+
 	}
 	/* 'fake' nodes that are the colored sides of the board */
 	board->set_node_color(SIDE_BOTTOM(n), COLOR_RED);
@@ -96,7 +97,7 @@ void hexboard::print_board()
 		for(int j=0;j<size;j++)
 		{
 			cout << " ";
-			
+
 			switch(board->get_node_color(convert_coords(j, i)))
 			{
 				case 0:
@@ -120,12 +121,12 @@ void hexboard::print_board()
 		printf("\x1B[37m %d", i);
 		cout << endl;
 	}
-	
+
 	for(int i=0;i<size-1;i++)
 	{
 		cout << "  ";
 	}
-	printf("     ");	
+	printf("     ");
 	for(int i=0;i<size;i++)
 	{
 		printf("\x1B[31mR   ");
@@ -136,7 +137,7 @@ void hexboard::print_board()
 	{
 		cout << "  ";
 	}
-	printf("     ");	
+	printf("     ");
 	for(int i=0;i<size;i++)
 	{
 		printf("%-3d ", i);
@@ -165,7 +166,7 @@ void hexboard::sim_make_move(int node, int color, int current)
 {
 	/* if it's a valid move, set the color of the node. here we check if
 	 * the "node data" has not been set by 'real' moves or by the current
-	 * simulation. This optimizes it quite a bit, since we don't have to 
+	 * simulation. This optimizes it quite a bit, since we don't have to
 	 * clone a board for each iteration of the simulation */
 	if(!board->node_data[node] || board->node_data[node] == current) return;
 	board->set_node_color(node, color);
@@ -243,13 +244,13 @@ int hexboard::simulate(int sim_num, int color, int other_player_color, int start
 	}
 	/* search if we've won or not */
 	int result = board->bfs(start, end, size*size, color);
-	if(result == 1) 
+	if(result == 1)
 		return 1;
 	else
 		return -1;
 }
 
-double hexboard::montecarlo(int color, int start, int end)
+double hexboard::montecarlo(int color, int start, int end, int* move)
 {
 	vector<int> list;
 	vector<double> dist;
@@ -259,7 +260,7 @@ double hexboard::montecarlo(int color, int start, int end)
 	else if(ret == 0) return 1;
 	/* human's color */
 	int other_player_color = (color == COLOR_BLUE ? COLOR_RED : COLOR_BLUE);
-	
+
 	/* make a list of all the potential moves */
 	set<int> potential_moves;
 	for(int i=0;i<size*size;i++)
@@ -267,7 +268,7 @@ double hexboard::montecarlo(int color, int start, int end)
 		if(is_valid_move(i))
 			potential_moves.insert(i);
 	}
-	
+
 	/* go through all of them and find the one with the highest winning probability */
 	set<int>::iterator it;
 	int best_move=*(potential_moves.begin());
@@ -289,7 +290,7 @@ double hexboard::montecarlo(int color, int start, int end)
 		}
 		delete sim;
 		double p = ((double)wins*100 / ((double)wins+losses));
-		
+
 		cout << "[" << node << " / " << size*size << "]: " << p;
 		if(debug) cout << endl;
 		else cout << "                                  \r";
@@ -303,6 +304,7 @@ double hexboard::montecarlo(int color, int start, int end)
 	cout << "                                  \rmoving: " << best_move << " with confidence " << best_move_val << endl;
 	/* actually make the move */
 	make_move(best_move, color);
+	*move = best_move;
 	/* Use dijkstra to get a lot more information on if someone has won */
 	ret = board->dijkstra(start, end, size*size, color, list, dist);
 	if(ret == INFINITY) return -1;
@@ -310,99 +312,152 @@ double hexboard::montecarlo(int color, int start, int end)
 	return 0;
 }
 
-double hexboard::computer_move(int color, int start, int end)
+double hexboard::computer_move(int color, int start, int end, int* move)
 {
-	return montecarlo(color, start, end);
+	return montecarlo(color, start, end, move);
 }
 
-int main(int argc, char **argv)
+int play_hex(int* values)
 {
+
 	int size = 11;
-	if(argc > 1)
-		size = atoi(argv[1]);
 	srand(time(NULL));
-	
+
 	int computer_color = COLOR_RED, computer_start_node = SIDE_TOP(size), computer_end_node = SIDE_BOTTOM(size);
 	int player_color = COLOR_BLUE;
 	hexboard h(size);
-	h.generate_connected_graph();
-	cout << "hex! Player is BLUE, computer is RED" << endl;
-	cout << "board size is: " << size << endl;
-	cout << "connections are as follows:" << endl;
-	cout << "  *   *" << endl;
-	cout << "   \\ /" << endl;
-	cout << "* - * - *" << endl;
-	cout << "   / \\" << endl;
-	cout << "  *   *" << endl;
-	cout << "to move, type coordinates of form \"i j\", where i is the vertical axis and j is the horizontal axis" << endl;
-	cout << "who will go first (C/h)? ";
-	char input;
-	cin >> input;
-	/* who's going first? */
-	int computer_first = ((input == 'C' || input == 'c') ? 1 : 0);
-	cout << "ok, " << (computer_first ? "computer" : "player") << " will go first" << endl;
-	
-	if(computer_first)
+
+	for (int i = 0; i < 11; ++i)
 	{
-		h.computer_move(computer_color, computer_start_node, computer_end_node);
-		h.print_board();
-		cout << "pie rule! Would you like to switch sides (Y/n)? ";
-		cin >> input;
-		if(input == 'Y' || input == 'y')
+		for (int j = 0; j < 11; ++j)
 		{
-			/* switch the computer's start and end sides to the others. Also switch
-			 * the color of the computer */
-			computer_color = COLOR_BLUE;
-			computer_end_node = SIDE_LEFT(size);
-			computer_start_node = SIDE_RIGHT(size);
-			/* player switches sides too */
-			player_color = COLOR_RED;
-			/* computer is now 'second player' so it gets it's move now */
-			h.computer_move(computer_color, computer_start_node, computer_end_node);
+			int color = 0;
+			if (values[11*i+j] == 1) {
+				color = COLOR_BLUE;
+			} else if (values[11*i+j] == 2) {
+				color = COLOR_RED;
+			}
+			h.board->set_node_color(h.convert_coords(j, i), color);
+			// board->node_data[node]=0; TODO maybe this is needed?
+			// last = node;
+			// empty--;
+			// return 1;
 		}
-		/* notify the user that they've changed colors */
-		if(input == 'Y' || input == 'y')
-			cout << "you are now RED" << endl;
 	}
-	/* now, print the board here so that we don't needlessly print it later */
+
+	h.generate_connected_graph();
+	int move_made = 0;
+	double ret = h.computer_move(computer_color, computer_start_node, computer_end_node, &move_made);
 	h.print_board();
-	while(true) {
-		cout << "Enter your move: ";
-		char move[16];
-		int x, y;
-		/* theres probably a C++-y nice clean way of doing this, but I'm tired and
-		 * this works quite well. */
-		cin >> move;
-		if(cin.eof()) break;
-		char *sep = strchr(move, ',');
-		if(!sep) {
-			char move2[16];
-			cin >> move2;
-			y = atoi(move2);
-		} else {
-			*sep = 0;
-			y = atoi(sep+1);
-		}
-		x = atoi(move);
-		/* continue if it's an invalid move */
-		if(!h.make_move(h.convert_coords(y, x), player_color)) {
-			cout << "invalid move!" << endl;
-			continue;
-		}
-		/* ...and now it's the computer's turn */
-		double ret = h.computer_move(computer_color, computer_start_node, computer_end_node);
-		h.print_board();
-		/* the computer's move function calculates the end of the game for us */
-		if(ret == -1)
-		{
-			cout << "you won!!" << endl;
-			break;
-		} else if(ret == 1)
-		{
-			cout << "computer won!!" << endl;
-			break;
-		}
-		
+	/* the computer's move function calculates the end of the game for us */
+	if(ret == -1)
+	{
+		cout << "you won!!" << endl;
+	} else if(ret == 1)
+	{
+		cout << "computer won!!" << endl;
 	}
-	return 0;
+	return move_made;
+}
+
+// int play_hex(int* values)
+// {
+// 	int size = 11;
+// 	srand(time(NULL));
+
+// 	int computer_color = COLOR_RED, computer_start_node = SIDE_TOP(size), computer_end_node = SIDE_BOTTOM(size);
+// 	int player_color = COLOR_BLUE;
+// 	hexboard h(size);
+
+// 	h.generate_connected_graph();
+// 	cout << "hex! Player is BLUE, computer is RED" << endl;
+// 	cout << "board size is: " << size << endl;
+// 	cout << "connections are as follows:" << endl;
+// 	cout << "  *   *" << endl;
+// 	cout << "   \\ /" << endl;
+// 	cout << "* - * - *" << endl;
+// 	cout << "   / \\" << endl;
+// 	cout << "  *   *" << endl;
+// 	cout << "to move, type coordinates of form \"i j\", where i is the vertical axis and j is the horizontal axis" << endl;
+// 	cout << "who will go first (C/h)? ";
+
+// 	char input;
+// 	cin >> input;
+// 	/* who's going first? */
+// 	int computer_first = ((input == 'C' || input == 'c') ? 1 : 0);
+// 	cout << "ok, " << (computer_first ? "computer" : "player") << " will go first" << endl;
+
+// 	if(computer_first)
+// 	{
+// 		h.computer_move(computer_color, computer_start_node, computer_end_node);
+// 		h.print_board();
+// 		cout << "pie rule! Would you like to switch sides (Y/n)? ";
+// 		cin >> input;
+// 		if(input == 'Y' || input == 'y')
+// 		{
+// 			/* switch the computer's start and end sides to the others. Also switch
+// 			 * the color of the computer */
+// 			computer_color = COLOR_BLUE;
+// 			computer_end_node = SIDE_LEFT(size);
+// 			computer_start_node = SIDE_RIGHT(size);
+// 			/* player switches sides too */
+// 			player_color = COLOR_RED;
+// 			/* computer is now 'second player' so it gets it's move now */
+// 			h.computer_move(computer_color, computer_start_node, computer_end_node);
+// 		}
+// 		/* notify the user that they've changed colors */
+// 		if(input == 'Y' || input == 'y')
+// 			cout << "you are now RED" << endl;
+// 	}
+// 	/* now, print the board here so that we don't needlessly print it later */
+// 	h.print_board();
+// 	while(true) {
+// 		cout << "Enter your move: ";
+// 		char move[16];
+// 		int x, y;
+// 		/* theres probably a C++-y nice clean way of doing this, but I'm tired and
+// 		 * this works quite well. */
+// 		cin >> move;
+// 		if(cin.eof()) break;
+// 		char *sep = strchr(move, ',');
+// 		if(!sep) {
+// 			char move2[16];
+// 			cin >> move2;
+// 			y = atoi(move2);
+// 		} else {
+// 			*sep = 0;
+// 			y = atoi(sep+1);
+// 		}
+// 		x = atoi(move);
+// 		/* continue if it's an invalid move */
+// 		if(!h.make_move(h.convert_coords(y, x), player_color)) {
+// 			cout << "invalid move!" << endl;
+// 			continue;
+// 		}
+// 		/* ...and now it's the computer's turn */
+// 		double ret = h.computer_move(computer_color, computer_start_node, computer_end_node);
+// 		h.print_board();
+// 		/* the computer's move function calculates the end of the game for us */
+// 		if(ret == -1)
+// 		{
+// 			cout << "you won!!" << endl;
+// 			break;
+// 		} else if(ret == 1)
+// 		{
+// 			cout << "computer won!!" << endl;
+// 			break;
+// 		}
+
+// 	}
+// 	return 0;
+// }
+
+extern "C" {
+    int HexGrid_ai_move(int* array){
+    	// for (int i = 0; i < 11*11; ++i)
+    	// {
+    	// 	fprintf(stdout, "%d\n", array[i]);
+    	// }
+    	return play_hex(array);
+    }
 }
