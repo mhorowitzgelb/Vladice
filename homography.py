@@ -173,12 +173,14 @@ def get_piece(square):
     blue_mask = cv2.inRange(hsv_square,lower_blue,upper_blue)
     nonzero_blue = np.nonzero(blue_mask)
     nonzero_red = np.nonzero(red_mask)
-    if (float(len(nonzero_red[0])) / (red_mask.shape[0] *red_mask.shape[1])) >= 0.4:
-        return 2
-    elif (float(len(nonzero_blue[0]))/(blue_mask.shape[0]* blue_mask.shape[1])) >= 0.4:
-        return 1
-    else:
+    red_ratio = (float(len(nonzero_red[0])) / (red_mask.shape[0] *red_mask.shape[1]))
+    blue_ratio = (float(len(nonzero_blue[0]))/(blue_mask.shape[0]* blue_mask.shape[1]))
+    if(red_ratio < 0.3 and blue_ratio <0.3):
         return 0
+    elif red_ratio > blue_ratio:
+        return 2
+    else:
+        return 1
 
 
 
