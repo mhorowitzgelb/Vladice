@@ -2,11 +2,8 @@ import time
 import picamera
 import numpy as np
 import cv2
-import sys
 from subprocess import call
 import pyttsx
-
-I_AM_VLADIMIR = 'speech/i_am_vladimir.wav'
 
 class RaspberryPI:
 	camera = picamera.PiCamera()
@@ -24,7 +21,7 @@ class RaspberryPI:
 		self.camera.capture(output, 'bgr')
 		output = output.reshape((self.buffer_res[1], self.buffer_res[0], 3))
 		return output
-	
+
 	def voice_tile(self):
 		pass
 
@@ -44,7 +41,7 @@ class RaspberryPI:
 		cols = ['one','two','three','four','five','six','seven','eight','nine','ten','eleven']
 		self.voice('My move is' + ',' + rows[row] + ',' + cols[col])
 
-	
+
 def show_image(im):
 	cv2.namedWindow('im', cv2.WINDOW_NORMAL)
 	cv2.imshow('im', im)
