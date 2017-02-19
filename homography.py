@@ -143,7 +143,7 @@ def click_corners(event, x, y, flags, param):
             points_selected = True
 
 
-lower_red = (0, 100, 100)
+lower_red = (0, 100, 30)
 upper_red = (10, 255, 255)
 
 def get_piece(square):
