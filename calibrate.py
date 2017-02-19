@@ -15,7 +15,7 @@ cv.createTrackbar('track_green_vh','calibrate green',0,255,lambda x:x)
 
 cv.namedWindow("calibrate red",cv.WINDOW_NORMAL)
 cv.resizeWindow("calibrate red", 960, 540)
-cv.createTrackbar('track_red_hl','calibrate red',-255,255,lambda y:y)
+cv.createTrackbar('track_red_hl','calibrate red',0,510,lambda y:y)
 cv.createTrackbar('track_red_hh','calibrate red',0,255,lambda y:y)
 cv.createTrackbar('track_red_sl','calibrate red',0,255,lambda y:y)
 cv.createTrackbar('track_red_sh','calibrate red',0,255,lambda y:y)
@@ -80,7 +80,7 @@ cv.imshow('original', img)
 
 
 while True:
-    hl = cv.getTrackbarPos('track_blue_hl','calibrate blue')
+    hl = cv.getTrackbarPos('track_blue_hl','calibrate blue')-255
     hh = cv.getTrackbarPos('track_blue_hh','calibrate blue')
     sl = cv.getTrackbarPos('track_blue_sl','calibrate blue')
     sh = cv.getTrackbarPos('track_blue_sh','calibrate blue')
