@@ -29,10 +29,10 @@ cv.createTrackbar('track_blue','calibrate blue',0,255,lambda z:z)
 cv.createTrackbar('track_blue','calibrate blue',0,255,lambda z:z)
 '''
 pi = RaspberryPI()
+img = pi.take_picture()
+hsv_img = cv.cvtColor(img, cv.COLOR_BGR2HSV)
 
 while True:
-    img = pi.take_picture()
-    hsv_img = cv.cvtColor(img,cv.COLOR_BGR2HSV)
     hl = cv.getTrackbarPos('track_green_hl','calibrate green')
     hh = cv.getTrackbarPos('track_green_hh','calibrate green')
     sl = cv.getTrackbarPos('track_green_sl','calibrate green')
