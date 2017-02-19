@@ -68,7 +68,7 @@ while True:
 
     if hl < 0:
         mask = cv.bitwise_or(cv.inRange(hsv_img, (255 + hl, sl, vl), (255, sh, vh)),
-                             cv.inRange(hsv_img(0, sl, vl), (hh, sl, vl)))
+                             cv.inRange(hsv_img,(0, sl, vl), (hh, sl, vl)))
     else:
         mask = cv.inRange(hsv_img,low_red,high_red)
     cv.imshow('calibrate red', mask)
