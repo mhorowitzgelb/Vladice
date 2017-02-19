@@ -2,28 +2,64 @@
 
 import cv2
 import numpy as np
+from circle_detection import get_square_points
 
 
-pts_src = []
-points_selected = False
+
 
 scale  = 50
 def main():
     cv2.namedWindow("srcImage")
-    cv2.setMouseCallback("srcImage", click_corners)
+    #cv2.setMouseCallback("srcImage", click_corners)
 
 
     # Read source image.
     im_src = cv2.imread('board_small.jpg')
+
+    points_unsorted = get_square_points(im_src)
+
+    left_aboves = np.zeros((4,2))
+
+    for i in range(4):
+        for j in range(i+1,4):
+            point_i = points_unsorted[i][0]
+            point_j = points_unsorted[j][0]
+            if point_i[0] < point_j[0]:
+                left_aboves[i][0] += 1
+            else:
+                left_aboves[j][0] += 1
+            if point_i[1] < point_j[1]:
+                left_aboves[i][1] += 1
+            else:
+                left_aboves[j][1] += 1
+
+    pts_src = np.zeros((4,2))
+
+
+    for i in range(4):
+        left_above = left_aboves[i]
+        if left_above[0] >=2 and left_above[1] >= 2:
+            pts_src[0,0] = points_unsorted[i][0][0]
+            pts_src[0,1] = points_unsorted[i][0][1]
+        elif left_above[0] < 2 and left_above[1] >= 2:
+            pts_src[1, 0] = points_unsorted[i][0][0]
+            pts_src[1, 1] = points_unsorted[i][0][1]
+        elif left_above[0] <2 and left_above[1] < 2:
+            pts_src[2, 0] = points_unsorted[i][0][0]
+            pts_src[2, 1] = points_unsorted[i][0][1]
+        elif left_above[0] >= 2 and left_above[1] < 2:
+            pts_src[3, 0] = points_unsorted[i][0][0]
+            pts_src[3, 1] = points_unsorted[i][0][1]
+
+
+
+
     cv2.imshow("srcImage", im_src)
 
 
 
     pts_dst = np.array([[0, 0], [11*scale -1, 0], [11*scale -1, 11* scale -1], [0, 11* scale -1]])
-    while True:
-        cv2.waitKey()
-        if points_selected:
-            break
+
 
 
     # Calculate Homography
