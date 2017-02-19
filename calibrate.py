@@ -50,7 +50,7 @@ while True:
     if(cv.waitKey(100)== 10):
         break
 
-cv.destroyWindow("calibrate red")
+cv.destroyWindow("calibrate green")
 
 bound_dict = {'green' : (low_green,high_green)}
 
