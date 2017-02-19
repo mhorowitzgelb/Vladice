@@ -74,7 +74,6 @@ cv.destroyWindow('calibrate red')
 
 bound_dict['red'] = (low_red,high_red)
 
-cv.destroyAllWindows()
 
 cv.imshow('original', img)
 
