@@ -31,6 +31,59 @@ cv.createTrackbar('track_blue_sh','calibrate blue',0,255,lambda z:z)
 cv.createTrackbar('track_blue_vl','calibrate blue',0,255,lambda z:z)
 cv.createTrackbar('track_blue_vh','calibrate blue',0,255,lambda z:z)
 
+f = open("bounds.pkl",'rb')
+bounds = cPickle.load(f)
+
+red_bounds = bounds['red']
+blue_bounds = bounds['blue']
+green_bounds = bounds['green']
+
+red_hl = red_bounds[0][0]
+red_hh = red_bounds[1][0]
+red_sl = red_bounds[0][1]
+red_sh = red_bounds[1][1]
+red_vl = red_bounds[0][2]
+red_vh = red_bounds[1][2]
+
+
+blue_hl = blue_bounds[0][0]
+blue_hh = blue_bounds[1][0]
+blue_sl = blue_bounds[0][1]
+blue_sh = blue_bounds[1][1]
+blue_vl = blue_bounds[0][2]
+blue_vh = blue_bounds[1][2]
+
+green_hl = green_bounds[0][0]
+green_hh = green_bounds[1][0]
+green_sl = green_bounds[0][1]
+green_sh = green_bounds[1][1]
+green_vl = green_bounds[0][2]
+green_vh = green_bounds[1][2]
+
+cv.setTrackbarPos('track_green_hl','calibrate green',green_hl)
+cv.setTrackbarPos('track_green_hh','calibrate green',green_hh)
+cv.setTrackbarPos('track_green_sl','calibrate green',green_sl)
+cv.setTrackbarPos('track_green_sh','calibrate green',green_sh)
+cv.setTrackbarPos('track_green_vl','calibrate green',green_vl)
+cv.setTrackbarPos('track_green_vh','calibrate green',green_vh)
+
+cv.setTrackbarPos('track_red_hl','calibrate red',red_hl)
+cv.setTrackbarPos('track_red_hh','calibrate red',red_hh)
+cv.setTrackbarPos('track_red_sl','calibrate red',red_sl)
+cv.setTrackbarPos('track_red_sh','calibrate red',red_sh)
+cv.setTrackbarPos('track_red_vl','calibrate red',red_vl)
+cv.setTrackbarPos('track_red_vh','calibrate red',red_vh)
+
+cv.setTrackbarPos('track_blue_hl','calibrate blue',blue_hl)
+cv.setTrackbarPos('track_blue_hh','calibrate blue',blue_hh)
+cv.setTrackbarPos('track_blue_sl','calibrate blue',blue_sl)
+cv.setTrackbarPos('track_blue_sh','calibrate blue',blue_sh)
+cv.setTrackbarPos('track_blue_vl','calibrate blue',blue_vl)
+cv.setTrackbarPos('track_blue_vh','calibrate blue',blue_vh)
+
+
+
+
 pi = RaspberryPI()
 img = pi.take_picture()
 hsv_img = cv.cvtColor(img, cv.COLOR_BGR2HSV)
