@@ -9,7 +9,9 @@ def ai_move(board):
         for j in xrange(11):
             grid[11*i+j] = c_int(board[i][j])
     c_move = lib.HexGrid_ai_move(grid)
-    return (c_move / 11, c_move % 11)
+    move = (c_move / 11, c_move % 11)
+    print move
+    return move
 
 if __name__ == '__main__':
     board = [[0 for x in range(11)] for y in range(11)]
