@@ -19,7 +19,7 @@ def main():
 
 
 
-    pts_dst = np.array([[1, 1], [12, 1], [12, 11], [1, 12]]) * scale
+    pts_dst = np.array([[0, 0], [11*scale -1, 0], [11*scale -1, 11* scale -1], [0, 11* scale -1]])
     while True:
         cv2.waitKey()
         if points_selected:
@@ -30,7 +30,7 @@ def main():
     h, status = cv2.findHomography(np.array(pts_src), pts_dst)
 
     # Warp source image to destination based on homography
-    im_out = cv2.warpPerspective(im_src, h, (13*scale, 13*scale))
+    im_out = cv2.warpPerspective(im_src, h, (11*scale, 11*scale))
 
     # Display images
     cv2.imshow("Warped Source Image", im_out)
@@ -42,7 +42,8 @@ def main():
 
 
     cv2.createTrackbar("Threshold", 'edge_detection', 0,255, lambda x: x)
-    print(gray_scale.shape)
+
+
     while(1):
         thresh = cv2.getTrackbarPos("Threshold","edge_detection")
         mask = ((gray_scale <=thresh) * 255).astype(np.uint8)
@@ -51,6 +52,12 @@ def main():
         if cv2.waitKey(10) == 27:
             break
 
+    for i in range(1, 11):
+        cv2.line(im_out,(i * scale, 0), (i* scale, 11* scale -1),(0,255,0),scale / 5)
+        cv2.line(im_out,(0, i * scale), (11* scale-1, i*scale),(0,255,0),scale / 5)
+
+    cv2.imshow("lines", im_out)
+    cv2.waitKey(0)
 
     cv2.destroyAllWindows()
 
