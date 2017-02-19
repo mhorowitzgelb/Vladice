@@ -18,7 +18,7 @@ using namespace std;
 #define SIDE_LEFT(n) n*n+3
 /* set to 1 for TRUE */
 int debug = 0;
-int num_iterations = 2000;
+int num_iterations = 50;
 
 
 void hexboard::generate_connected_graph()
@@ -265,7 +265,7 @@ double hexboard::montecarlo(int color, int start, int end, int* move)
 	set<int> potential_moves;
 	for(int i=0;i<size*size;i++)
 	{
-		if(is_valid_move(i) && (rand() % 10 == 1))
+		if(is_valid_move(i))
 			potential_moves.insert(i);
 	}
 
