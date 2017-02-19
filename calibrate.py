@@ -2,7 +2,8 @@ import cv2 as cv
 import numpy as np
 from bot import RaspberryPI
 
-cv.namedWindow("calibrate green")
+cv.namedWindow("calibrate green",cv.WINDOW_NORMAL)
+cv.namedWindow('original',cv.WINDOW_NORMAL)
 cv.resizeWindow("calibrate green", 960, 540)
 cv.createTrackbar('track_green_hl','calibrate green',0,255,lambda x:x)
 cv.createTrackbar('track_green_hh','calibrate green',0,255,lambda x:x)
