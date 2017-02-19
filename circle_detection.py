@@ -20,6 +20,7 @@ def get_square_points(image):
 
     #cv.imshow("mask", mask)
     iter_mask = mask.copy()
+    cv.imshow("color_mask", mask)
 
     points = []
     nonzero = np.nonzero(mask)
