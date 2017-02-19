@@ -15,7 +15,7 @@ cv.createTrackbar('track_green_vh','calibrate green',0,255,lambda x:x)
 
 cv.namedWindow("calibrate red",cv.WINDOW_NORMAL)
 cv.resizeWindow("calibrate red", 960, 540)
-cv.createTrackbar('track_red_hl','calibrate red',0,255,lambda y:y)
+cv.createTrackbar('track_red_hl','calibrate red',-255,255,lambda y:y)
 cv.createTrackbar('track_red_hh','calibrate red',0,255,lambda y:y)
 cv.createTrackbar('track_red_sl','calibrate red',0,255,lambda y:y)
 cv.createTrackbar('track_red_sh','calibrate red',0,255,lambda y:y)
@@ -65,6 +65,7 @@ while True:
     vh = cv.getTrackbarPos('track_red_vh','calibrate red')
     low_red = (hl,sl,vl)
     high_red = (hh,sh,vh)
+
     mask = cv.inRange(hsv_img,low_red,high_red)
     cv.imshow('calibrate red', mask)
     if(cv.waitKey(100)== 10):
@@ -87,7 +88,10 @@ while True:
     vh = cv.getTrackbarPos('track_blue_vh','calibrate blue')
     low_blue = (hl,sl,vl)
     high_blue = (hh,sh,vh)
-    mask = cv.inRange(hsv_img,low_blue,high_blue)
+    if hl < 0:
+        mask = cv.bitwise_or(cv.inRange(hsv_img,(255+hl,sl,vl),(255,sh,vh)) ,cv.inRange(hsv_img(0,sl,vl),(hh,sl,vl)))
+    else:
+        mask = cv.inRange(hsv_img,low_blue,high_blue)
     cv.imshow('calibrate blue', mask)
     if(cv.waitKey(100)== 10):
         break
