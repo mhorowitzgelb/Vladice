@@ -8,13 +8,12 @@ from circle_detection import get_square_points
 
 
 scale  = 50
-def main():
+def run_homography(im_src):
     cv2.namedWindow("srcImage")
     #cv2.setMouseCallback("srcImage", click_corners)
 
 
     # Read source image.
-    im_src = cv2.imread('board_small.jpg')
 
     points_unsorted = get_square_points(im_src)
 
