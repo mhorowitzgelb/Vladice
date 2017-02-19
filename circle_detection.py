@@ -11,7 +11,7 @@ def get_square_points(image):
 
     #cv.setMouseCallback("original",click_color)
 
-    greenLower = (29, 86, 6)
+    greenLower = (29, 86, 50)
     greenUpper = (70, 255, 255)
 
     mask = cv.inRange(hsv_image, greenLower, greenUpper)
