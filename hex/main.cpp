@@ -265,7 +265,7 @@ double hexboard::montecarlo(int color, int start, int end, int* move)
 	set<int> potential_moves;
 	for(int i=0;i<size*size;i++)
 	{
-		if(is_valid_move(i))
+		if(is_valid_move(i) && (rand() % 10 == 1))
 			potential_moves.insert(i);
 	}
 
